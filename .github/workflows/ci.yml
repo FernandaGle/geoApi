@@ -1,0 +1,44 @@
+name: CI Pipeline with Docker
+
+# Ejecutar el pipeline en eventos específicos
+on:
+  push:
+    branches:
+      - main  # Cuando se haga un push a la rama principal
+  pull_request:
+    branches:
+      - main  # Para pull requests a la rama principal
+
+# Definir los trabajos (jobs) a realizar
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clonar el repositorio
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # 2. Configurar Node.js
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # 3. Instalar dependencias
+      - name: Install dependencies
+        run: npm install
+
+      # 4. Ejecutar pruebas
+      - name: Run tests
+        run: npm test
+
+      # 5. Iniciar sesión en Docker Hub
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      # 6. Construir y subir la imagen Docker a Docker Hub
+      - name: Build and Push Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/geoapi:latest .
+          docker push ${{ secrets.DOCKER_USERNAME }}/geoapi:latest
