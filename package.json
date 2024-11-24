@@ -7,6 +7,13 @@
     "test": "jest",
     "lint": "eslint .",  
     "start": "node src/app.js"
+    },
+    "jest": {
+      "testMatch": [
+        "**/__tests__/**/*.[jt]s?(x)",
+        "**/?(*.)+(spec|test).[tj]s?(x)"
+      ]
+    
 
   },
   "keywords": [],
@@ -22,6 +29,5 @@
     "jest": "^29.7.0",
     "nodemon": "^3.1.7"
   }
-  
-  
 }
+  
