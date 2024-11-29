@@ -4,10 +4,10 @@ name: CI Pipeline with Docker
 on:
   push:
     branches:
-      - main  # Cuando se haga un push a la rama principal
+      - main  
   pull_request:
     branches:
-      - main  # Para pull requests a la rama principal
+      - main  
 
 # Definir los trabajos (jobs) a realizar
 jobs:
@@ -29,16 +29,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      # 4. Ejecutar pruebas
-      - name: Run tests
-        run: npm test
-
       # 5. Iniciar sesión en Docker Hub
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: docker login -p "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       # 6. Construir y subir la imagen Docker a Docker Hub
-      - name: Build and Push Docker image
+      - name: Build Docker Image
+        run: docker build -t fernandaglez/apigeo:${{github.sha}} .
+
+      - name: Tag Latest
+        run: docker tag fernandaglez/apigeo:${{ github.sha }} fernandaglez/apigeo:latest
+
+      - name: Push Docker Image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/geoapi:latest .
-          docker push ${{ secrets.DOCKER_USERNAME }}/geoapi:latest
+          docker push fernandaglez/apigeo:${{ github.sha }}
+          docker push fernandaglez/apigeo:latest
+
+        

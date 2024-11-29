@@ -2,18 +2,20 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const userRoutes = require('./routes/userRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const app = express();
+
 
 // Middleware
 app.use(bodyParser.json());
 app.use(express.json());
 
-// Rutas
 app.use('/api', eventRoutes);
 app.use('/api', eventRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/events', eventRoutes);
 
-// Conexión a MongoDB
 mongoose.connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -23,12 +25,24 @@ mongoose.connect(process.env.MONGO_URI, {
     console.error('Error al conectar a MongoDB:', err.message);
 });
 
-// Iniciar servidor
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
 
+const express = require('express');
+const mongoose = require('mongoose');
+const eventRoutes = require('./routes/eventRoutes'); // Asegúrate de que la ruta esté correctamente importada
 
 module.exports = app;
+
+const express = require('express');
+const mongoose = require('mongoose');
+const eventRoutes = require('./routes/eventRoutes'); // Asegúrate de que la ruta esté correctamente importada
+
+
+
+
+
 
